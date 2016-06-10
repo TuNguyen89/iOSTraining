@@ -38,8 +38,7 @@ typedef NS_ENUM(NSInteger, ProductSectionType) {
     
     [self configureTableView];
     productReviewList = [NSMutableArray new];
-    
-    [self fetchingProductReviewByNumberOfReivew: MAX_NUMBER_OF_REVIEW_PER_REQUEST];
+
     //Set the product name
     productName.text = [productObjectId valueForKey:@"productName"];
     
@@ -97,8 +96,15 @@ typedef NS_ENUM(NSInteger, ProductSectionType) {
     
     switch (indexPath.section) {
         case ProductSectionTypeCustomerReviews:
-            resultCell = [self buildTableViewCellForProductReviewSection:tableView];
+        {
+            resultCell = [self buildTableViewCellForProductReviewSection:tableView withRowIndex:indexPath.row];
+            
+            //Load more review into table view if table is full
+            if( (indexPath.row + 1) == (NSInteger) (productReviewList.count)) {
+                [self fetchingProductReviewByNumberOfReivew:MAX_NUMBER_OF_REVIEW_PER_REQUEST];
+            }
             break;
+        }
         case ProductSectionTypeAboutThisItem:
             resultCell = [self buildTableViewCellForAboutThisItemSection];
             break;
@@ -110,16 +116,31 @@ typedef NS_ENUM(NSInteger, ProductSectionType) {
     return resultCell;
 }
 
-- (UITableViewCell* ) buildTableViewCellForProductReviewSection: (UITableView*) tableView {
+- (UITableViewCell* ) buildTableViewCellForProductReviewSection: (UITableView*) tableView withRowIndex: (NSInteger) row {
+    
     static NSString* reusedCellId = @"ReviewTbCellId";
     APLProductReviewTableViewCell* reviewTableViewCell = [tableView dequeueReusableCellWithIdentifier:reusedCellId];
     
     if (reviewTableViewCell) {
         return reviewTableViewCell;
     } else {
-        return [[APLProductReviewTableViewCell alloc] initWithNibName:@"ReviewTableViewCell"];
-    }
+        
+        reviewTableViewCell = [[APLProductReviewTableViewCell alloc] initWithNibName:@"ReviewTableViewCell"];
+        //Fill the information for review cell
+            
+        if (productReviewList.count) {
+            //Get the review from review list
+            APLProductReview* review = [productReviewList objectAtIndex:row];
+            
+            reviewTableViewCell.userComment.text = review.comment;
+            reviewTableViewCell.userName.text = [[review.userObjectId objectForKey:@"userName"] isEqualToString:@""] ? [review.userObjectId objectForKey:@"email"] : [review.userObjectId objectForKey:@"userName"];
+            reviewTableViewCell.ratingBar.value  = review.rating/2.00f;
+        }
 
+    }
+    
+    
+    return reviewTableViewCell;
 }
 
 - (UITableViewCell*) buildTableViewCellForAboutThisItemSection {
@@ -131,44 +152,6 @@ typedef NS_ENUM(NSInteger, ProductSectionType) {
     return resultCell;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    
-    if ([cell isKindOfClass: [APLProductReviewTableViewCell class]])
-    {
-        APLProductReviewTableViewCell* reviewTableViewCell = (APLProductReviewTableViewCell*) cell;
-        
-        @try {
-    
-            if (indexPath.section == ProductSectionTypeCustomerReviews && productReviewList.count) {
-                APLProductReview* review = [productReviewList objectAtIndex:indexPath.row];
-
-                if (!reviewTableViewCell)
-                {
-                    //Create the new table view cell if it doesn't existing in table
-                    reviewTableViewCell = [[APLProductReviewTableViewCell alloc] initWithNibName:@"ReviewTableViewCell"];
-
-                }
-
-                reviewTableViewCell.userComment.text = review.comment;
-                [reviewTableViewCell.userComment sizeToFit];
-                reviewTableViewCell.userName.text = [[review.userObjectId objectForKey:@"userName"] isEqualToString:@""] ? [review.userObjectId objectForKey:@"email"] : [review.userObjectId objectForKey:@"userName"];
-                
-                reviewTableViewCell.ratingBar.value  = review.rating/2.00f;
-
-                if( (indexPath.row + 1) == (NSInteger) (productReviewList.count)) {
-                    [self fetchingProductReviewByNumberOfReivew:MAX_NUMBER_OF_REVIEW_PER_REQUEST];
-                }
-
-            }
-        } @catch (NSException* exception) {
-            NSLog(@"%@", exception);
-        } @finally {
-            
-        }
-    }
-    
-}
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
@@ -186,7 +169,10 @@ typedef NS_ENUM(NSInteger, ProductSectionType) {
 
 - (void)handleProductReview:(id) objectId {
     productObjectId = objectId;
-    
+
+    //Reload MAX_NUMBER_OF_REVIEW_PER_REQUEST of the table view
+    [productReviewList removeAllObjects];
+    [self fetchingProductReviewByNumberOfReivew: MAX_NUMBER_OF_REVIEW_PER_REQUEST];
 }
 
 - (void)fetchingProductReviewByNumberOfReivew: (NSInteger) numberOfReview {
@@ -242,7 +228,7 @@ typedef NS_ENUM(NSInteger, ProductSectionType) {
 
 - (void) configureTableView {
     tableViewReference.rowHeight = UITableViewAutomaticDimension;
-    tableViewReference.estimatedRowHeight = 320;
+    tableViewReference.estimatedRowHeight = 100;
 }
 
 #pragma mark - Delegate

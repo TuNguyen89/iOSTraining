@@ -20,8 +20,8 @@
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail Text Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rFs-Vh-q3s">
-                        <rect key="frame" x="10" y="23.5" width="300" height="66"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail Text Label" textAlignment="natural" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rFs-Vh-q3s">
+                        <rect key="frame" x="10" y="23.5" width="300" height="61"/>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -29,9 +29,9 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="1mM-aR-bCW" firstAttribute="leading" secondItem="kJX-cd-xUs" secondAttribute="leading" constant="10" id="6b5-lT-6aZ"/>
-                    <constraint firstAttribute="bottom" secondItem="rFs-Vh-q3s" secondAttribute="bottom" id="7sQ-7W-dD6"/>
                     <constraint firstAttribute="trailing" secondItem="rFs-Vh-q3s" secondAttribute="trailing" constant="10" id="Azk-uo-k6R"/>
                     <constraint firstItem="rFs-Vh-q3s" firstAttribute="top" secondItem="1mM-aR-bCW" secondAttribute="bottom" constant="5" id="TXP-fU-p5P"/>
+                    <constraint firstAttribute="bottom" secondItem="rFs-Vh-q3s" secondAttribute="bottom" constant="5" id="dFI-ni-ReI"/>
                     <constraint firstItem="1mM-aR-bCW" firstAttribute="top" secondItem="kJX-cd-xUs" secondAttribute="top" constant="5" id="qbZ-Ca-W4W"/>
                     <constraint firstItem="rFs-Vh-q3s" firstAttribute="leading" secondItem="1mM-aR-bCW" secondAttribute="leading" id="sZk-GJ-rVf"/>
                 </constraints>
